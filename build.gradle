@@ -1,0 +1,41 @@
+apply plugin: 'java'
+apply plugin: 'groovy'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    groovy group: 'org.codehaus.groovy', name: 'groovy', version: '1.7.6'
+    compile fileTree(dir: 'lib', includes: ['*.jar'])
+}
+
+version = 1.7
+
+jar {
+    archiveName = "EyeKeeperServer.jar"
+
+    manifest {
+        attributes 'Implementation-Title': 'ODP', 'Implementation-Version': version
+    }
+}
+
+
+task zip(type: Zip) {
+
+    from jar.outputs.files
+
+    from('scripts/') {
+        fileMode = 0755
+        include '**/runODP.sh'
+        include '**/runODP.bat'
+    }
+    from('lib/') {
+        include '**/*.jar'
+        into('lib')
+    }
+    from('.') {
+        include 'odp.config'
+    }
+
+}
